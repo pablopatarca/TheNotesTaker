@@ -12,8 +12,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import app.pablopatarca.thenotestaker.ui.main.EditNoteUIScreen
-import app.pablopatarca.thenotestaker.ui.main.MainUIComponent
+import app.pablopatarca.thenotestaker.ui.edit.EditNoteUIScreen
+import app.pablopatarca.thenotestaker.ui.main.MainUIScreen
 import app.pablopatarca.thenotestaker.ui.main.NotesViewModel
 import app.pablopatarca.thenotestaker.ui.theme.TheNotesTakerTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
                         startDestination = Screen.NoteScreen.route
                     ) {
                         composable(route = Screen.NoteScreen.route) {
-                            MainUIComponent(
+                            MainUIScreen(
                                 viewModel = viewModel,
                                 navController = navController
                             )
@@ -58,7 +58,6 @@ class MainActivity : ComponentActivity() {
                             )
                         ) {
                             EditNoteUIScreen(
-                                viewModel = viewModel,
                                 navController = navController
                             )
                         }

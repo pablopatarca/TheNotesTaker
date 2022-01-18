@@ -16,6 +16,7 @@ import app.pablopatarca.thenotestaker.data.Note
 @Composable
 fun NoteItem(
     note: Note,
+    onClick: ()-> Unit = {},
     modifier: Modifier
 ){
     
@@ -23,7 +24,9 @@ fun NoteItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .clickable { }
+            .clickable {
+                onClick.invoke()
+            }
     ) {
         Column(
             modifier = Modifier

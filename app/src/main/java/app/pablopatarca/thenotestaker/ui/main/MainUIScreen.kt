@@ -1,6 +1,5 @@
 package app.pablopatarca.thenotestaker.ui.main
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -18,7 +17,7 @@ import app.pablopatarca.thenotestaker.ui.Screen
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun MainUIComponent(
+fun MainUIScreen(
     viewModel: NotesViewModel,
     navController: NavController
 ) {
@@ -73,12 +72,12 @@ fun NotesList(
         items(state.notes){ note ->
             NoteItem(
                 note = note,
+                onClick = {
+                    navController.navigate(
+                        Screen.EditScreen.route + "?id=${note.id}"
+                    )
+                },
                 modifier = Modifier.fillMaxWidth()
-                    .clickable {
-                        navController.navigate(
-                            Screen.EditScreen.route + "?id=${note.id}"
-                        )
-                    }
             )
         }
     }
