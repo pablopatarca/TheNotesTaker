@@ -1,11 +1,14 @@
 package app.pablopatarca.thenotestaker.data
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity
 data class Note(
-    val id: Int? = null,
+    @PrimaryKey val id: Int? = null,
     val title: String,
     val content: String,
     val createdAt: Long,
     val updatedAt: Long,
-    val color: Int,
-    val tags: List<String>
+    val color: Int
 )

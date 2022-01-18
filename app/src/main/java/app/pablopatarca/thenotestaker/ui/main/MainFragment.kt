@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
-import app.pablopatarca.thenotestaker.data.FakeNotesDao
 import app.pablopatarca.thenotestaker.data.NotesRepositoryImpl
 
 class MainFragment : Fragment() {
@@ -23,7 +22,7 @@ class MainFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                MainUIComponent(viewModel = viewModel)
+//                MainUIComponent(viewModel = viewModel)
             }
         }
     }
@@ -31,11 +30,11 @@ class MainFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 //        viewModel = ViewModelProvider(this)[NotesViewModel::class.java]
-        viewModel = NotesViewModel(
-            NotesRepositoryImpl(
-                FakeNotesDao()
-            )
-        )
+//        viewModel = NotesViewModel(
+//            NotesRepositoryImpl(
+//                FakeNotesDao()
+//            )
+//        )
 
     }
 

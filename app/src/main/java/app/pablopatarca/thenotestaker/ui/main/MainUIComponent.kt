@@ -13,11 +13,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import app.pablopatarca.thenotestaker.ui.Screen
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun MainUIComponent(
-    viewModel: NotesViewModel
+    viewModel: NotesViewModel,
+    navController: NavController
 ) {
     val state = viewModel.state.value
     val scaffoldState = rememberScaffoldState()
@@ -27,7 +30,7 @@ fun MainUIComponent(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-
+                    navController.navigate(Screen.EditScreen.route)
                 },
                 backgroundColor = MaterialTheme.colors.primary
             ) {
@@ -52,21 +55,29 @@ fun MainUIComponent(
                 )
             }
 
-            NotesList(state)
+            NotesList(
+                state = state,
+                navController = navController
+            )
         }
 
     }
 }
 
 @Composable
-fun NotesList(state: NotesUIState){
+fun NotesList(
+    state: NotesUIState,
+    navController: NavController
+){
     LazyColumn(modifier = Modifier.fillMaxSize()){
         items(state.notes){ note ->
             NoteItem(
                 note = note,
                 modifier = Modifier.fillMaxWidth()
                     .clickable {
-                        //TODO: Implement navigation
+                        navController.navigate(
+                            Screen.EditScreen.route + "?id=${note.id}"
+                        )
                     }
             )
         }

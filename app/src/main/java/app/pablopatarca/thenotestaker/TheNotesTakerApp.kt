@@ -1,8 +1,7 @@
 package app.pablopatarca.thenotestaker
 
 import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
 
-class TheNotesTakerApp: Application() {
-
-
-}
+@HiltAndroidApp
+class TheNotesTakerApp: Application()
