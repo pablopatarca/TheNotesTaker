@@ -1,4 +1,4 @@
-package app.pablopatarca.thenotestaker.data
+package app.pablopatarca.thenotestaker.domain
 
 import kotlinx.coroutines.flow.Flow
 

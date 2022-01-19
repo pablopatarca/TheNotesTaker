@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import app.pablopatarca.thenotestaker.data.Note
+import app.pablopatarca.thenotestaker.domain.Note
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable

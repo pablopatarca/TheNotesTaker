@@ -5,8 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import app.pablopatarca.thenotestaker.data.Note
-import app.pablopatarca.thenotestaker.data.NotesRepository
+import app.pablopatarca.thenotestaker.domain.Note
+import app.pablopatarca.thenotestaker.domain.NotesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,6 +23,7 @@ class EditNoteViewModel @Inject constructor(
     val noteContent: State<String> = _noteContent
 
     private var currentNoteId: Int? = null
+    private var createdAt: Long? = null
 
     init {
         savedStateHandle.get<Int>("id")?.let { noteId ->
@@ -32,6 +33,7 @@ class EditNoteViewModel @Inject constructor(
                         currentNoteId = note.id
                         _noteTitle.value = note.title
                         _noteContent.value = note.content
+                        createdAt = note.createdAt
                     }
                 }
             }
@@ -52,14 +54,15 @@ class EditNoteViewModel @Inject constructor(
 
                 _noteTitle.value = noteTitle.value
                 _noteContent.value = noteContent.value
+                val currentTime = System.currentTimeMillis()
 
                 notesRepository.insert(
                     Note(
                         id = currentNoteId,
                         title = noteTitle.value,
                         content = noteContent.value,
-                        createdAt = System.currentTimeMillis(),
-                        updatedAt = System.currentTimeMillis(),
+                        createdAt = createdAt ?: currentTime,
+                        updatedAt = currentTime,
                         color = 0
                     )
                 )

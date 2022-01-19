@@ -10,10 +10,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import app.pablopatarca.thenotestaker.R
 import app.pablopatarca.thenotestaker.ui.Screen
+import app.pablopatarca.thenotestaker.ui.theme.Typography
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
@@ -44,13 +48,15 @@ fun MainUIScreen(
                 .fillMaxSize()
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(16.dp, 8.dp, 8.dp, 8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp, 8.dp, 8.dp, 8.dp),
                 horizontalArrangement =  Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Your Notes",
-                    style = MaterialTheme.typography.h4
+                    text = stringResource(id = R.string.main_screen_title),
+                    style = Typography.h4.copy(fontWeight = FontWeight.Bold)
                 )
             }
 
