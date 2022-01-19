@@ -6,11 +6,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import app.pablopatarca.thenotestaker.R
 
 @Preview(showBackground = true, device = Devices.NEXUS_6)
 @Composable
@@ -47,6 +50,12 @@ fun EditNoteUIScreen(
                 onValueChange = {
                     viewModel.enteredTitle(it)
                 },
+                label = { Text(text = stringResource(id = R.string.note_title_label)) },
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = MaterialTheme.colors.background,
+                    focusedIndicatorColor = Color.Gray,
+                    unfocusedIndicatorColor = Color.Gray
+                ),
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 textStyle = MaterialTheme.typography.h5
@@ -57,8 +66,14 @@ fun EditNoteUIScreen(
                 onValueChange = {
                     viewModel.enteredContent(it)
                 },
+                label = { Text(text = stringResource(id = R.string.note_content_label)) },
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = MaterialTheme.colors.background,
+                    focusedIndicatorColor = Color.Gray,
+                    unfocusedIndicatorColor = Color.Gray
+                ),
                 textStyle = MaterialTheme.typography.body1,
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize()
             )
         }
     }
