@@ -7,12 +7,15 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import app.pablopatarca.thenotestaker.domain.Note
+import java.text.SimpleDateFormat
+import java.util.*
 
-@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun NoteItem(
     note: Note,
@@ -49,7 +52,26 @@ fun NoteItem(
                 maxLines = 10,
                 overflow = TextOverflow.Ellipsis
             )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(0.dp, 8.dp, 0.dp, 0.dp)
+            ) {
+                Text(
+                    text = "Updated: ${note.updatedAt.toTime()}",
+                    Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Right,
+                    fontStyle = FontStyle.Italic,
+                    style = MaterialTheme.typography.body2.copy(fontSize = 10.sp)
+                )
+            }
         }
     }
 
+}
+
+private fun Long.toTime(): String {
+    val date = Date(this)
+    val format = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+    return format.format(date)
 }
