@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class NoteDto(
-    @PrimaryKey val id: Int? = null,
+    @PrimaryKey val noteId: Long? = null,
     val title: String,
     val content: String,
     val createdAt: Long,

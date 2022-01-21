@@ -11,4 +11,12 @@ interface NotesRepository {
     suspend fun insert(note: Note)
 
     suspend fun delete(note: Note)
+
+    fun getNotesWithTags(): Flow<List<Note>>
+
+    fun getNotesByTag(tag: String): Flow<List<Note>>
+
+    suspend fun insert(tag: Tag): Long
+
+    fun getTags(): Flow<List<Tag>>
 }

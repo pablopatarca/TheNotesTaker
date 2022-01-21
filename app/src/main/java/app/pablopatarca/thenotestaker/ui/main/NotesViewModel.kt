@@ -30,9 +30,15 @@ class NotesViewModel @Inject constructor(
     private fun getNotes(){
         getNotesJob?.cancel()
 
-        getNotesJob = notesRepository.getNotes().onEach {
+        getNotesJob = notesRepository.getNotesWithTags().onEach {
             _state.value = state.value.copy(
                 notes = it
+            )
+        }.launchIn(viewModelScope)
+
+        getNotesJob = notesRepository.getTags().onEach {
+            _state.value = state.value.copy(
+                tags = it
             )
         }.launchIn(viewModelScope)
     }

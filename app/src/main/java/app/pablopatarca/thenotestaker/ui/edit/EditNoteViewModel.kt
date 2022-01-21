@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.pablopatarca.thenotestaker.domain.Note
 import app.pablopatarca.thenotestaker.domain.NotesRepository
+import app.pablopatarca.thenotestaker.domain.Tag
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -22,7 +23,7 @@ class EditNoteViewModel @Inject constructor(
     private val _noteContent = mutableStateOf("")
     val noteContent: State<String> = _noteContent
 
-    private var currentNoteId: Int? = null
+    private var currentNoteId: Long? = null
     private var createdAt: Long? = null
 
     init {
@@ -63,7 +64,8 @@ class EditNoteViewModel @Inject constructor(
                         content = noteContent.value,
                         createdAt = createdAt ?: currentTime,
                         updatedAt = currentTime,
-                        color = 0
+                        color = 0,
+                        tags = listOf()
                     )
                 )
             } catch(e: Exception) {

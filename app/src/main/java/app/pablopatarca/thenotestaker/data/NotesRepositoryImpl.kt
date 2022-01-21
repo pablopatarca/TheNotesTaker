@@ -2,6 +2,7 @@ package app.pablopatarca.thenotestaker.data
 
 import app.pablopatarca.thenotestaker.domain.Note
 import app.pablopatarca.thenotestaker.domain.NotesRepository
+import app.pablopatarca.thenotestaker.domain.Tag
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -22,16 +23,53 @@ class NotesRepositoryImpl(
     }
 
     override suspend fun insert(note: Note) {
-        return dataSource.insert(note.toNoteDto())
+
+        val noteId = dataSource.insert(note.toNoteDto())
+
+        note.tags.forEach {
+
+            val tagId = insert(it)
+
+            val noteTagRef = NoteTagCrossRef(
+                noteId = noteId,
+                tagId = tagId
+            )
+
+            dataSource.insert(noteTagRef)
+        }
     }
 
     override suspend fun delete(note: Note) {
-        return dataSource.delete(note.toNoteDto())
+        dataSource.delete(note.toNoteDto())
+    }
+
+    override fun getNotesWithTags(): Flow<List<Note>> {
+        return dataSource.getNotesTags().map { list ->
+            list.map {
+                it.toNote()
+            }
+        }
+    }
+
+    override fun getNotesByTag(tag: String): Flow<List<Note>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun insert(tag: Tag): Long {
+        return dataSource.insert(TagDto(name = tag.name))
+    }
+
+    override fun getTags(): Flow<List<Tag>> {
+        return dataSource.getTags().map { list ->
+            list.map {
+                Tag(it.tagId, it.name)
+            }
+        }
     }
 
     private fun Note.toNoteDto(): NoteDto {
         return NoteDto(
-            id = id,
+            noteId = id,
             title = title,
             content = content,
             createdAt = createdAt,
@@ -39,15 +77,41 @@ class NotesRepositoryImpl(
             color = color
         )
     }
+    private fun Note.toNoteWithTags(): NoteWithTags {
+        return NoteWithTags(
+            note = toNoteDto(),
+            tags = tags.map {
+                TagDto(name = it.name)
+            }
+        )
+    }
 
     private fun NoteDto.toNote(): Note {
         return Note(
-            id = id,
+            id = noteId,
             title = title,
             content = content,
             createdAt = createdAt,
             updatedAt = updatedAt,
-            color = color
+            color = color,
+            tags = listOf()
+        )
+    }
+
+    private fun NoteWithTags.toNote(): Note {
+        return Note(
+            id = note.noteId,
+            title = note.title,
+            content = note.content,
+            createdAt = note.createdAt,
+            updatedAt = note.updatedAt,
+            color = note.color,
+            tags = tags.map {
+                Tag(
+                    id = it.tagId,
+                    name = it.name
+                )
+            }
         )
     }
 

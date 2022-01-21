@@ -6,6 +6,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -55,11 +56,17 @@ fun NoteItem(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(0.dp, 8.dp, 0.dp, 0.dp)
+                    .padding(0.dp, 8.dp, 0.dp, 0.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
+                    text = "tags: ${note.tags.joinToString(", "){ it.name }}",
+                    textAlign = TextAlign.Left,
+                    fontStyle = FontStyle.Normal,
+                    style = MaterialTheme.typography.body2.copy(fontSize = 10.sp)
+                )
+                Text(
                     text = "Updated: ${note.updatedAt.toTime()}",
-                    Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Right,
                     fontStyle = FontStyle.Italic,
                     style = MaterialTheme.typography.body2.copy(fontSize = 10.sp)

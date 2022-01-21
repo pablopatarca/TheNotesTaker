@@ -11,15 +11,15 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import app.pablopatarca.thenotestaker.R
 import app.pablopatarca.thenotestaker.ui.Screen
 import app.pablopatarca.thenotestaker.ui.theme.Typography
 
-@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun MainUIScreen(
     viewModel: NotesViewModel,
@@ -59,6 +59,15 @@ fun MainUIScreen(
                     style = Typography.h4.copy(fontWeight = FontWeight.Bold)
                 )
             }
+
+            Text(
+                text = "Tags: ${state.tags.joinToString(", ") { it.name }}",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp, 0.dp, 0.dp, 0.dp),
+                fontStyle = FontStyle.Italic,
+                fontFamily = FontFamily.SansSerif
+            )
 
             NotesList(
                 state = state,

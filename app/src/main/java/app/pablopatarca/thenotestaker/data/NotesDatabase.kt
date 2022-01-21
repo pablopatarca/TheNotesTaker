@@ -4,7 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [NoteDto::class],
+    entities = [NoteDto::class, TagDto::class, NoteTagCrossRef::class],
     version = 1
 )
 abstract class NotesDatabase: RoomDatabase() {
