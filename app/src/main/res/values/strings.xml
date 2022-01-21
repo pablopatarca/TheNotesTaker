@@ -2,6 +2,8 @@
     <string name="app_name">The Notes Taker</string>
     <string name="title_activity_profile">ProfileActivity</string>
     <string name="note_title_label">Title</string>
+    <string name="note_tags_label">Tags #</string>
     <string name="note_content_label">Write something…</string>
     <string name="main_screen_title">Your Notes ✍️</string>
+    <string name="edit_note_screen_title">Write… ✍️</string>
 </resources>

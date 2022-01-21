@@ -5,17 +5,17 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import app.pablopatarca.thenotestaker.R
+import app.pablopatarca.thenotestaker.ui.theme.Typography
 
-@Preview(showBackground = true, device = Devices.NEXUS_6)
 @Composable
 fun EditNoteUIScreen(
     navController: NavController,
@@ -24,6 +24,7 @@ fun EditNoteUIScreen(
 
     val titleState = viewModel.noteTitle.value
     val contentState = viewModel.noteContent.value
+    val tagsState = viewModel.noteTags.value
     val scaffoldState = rememberScaffoldState()
 
     Scaffold(
@@ -43,8 +44,19 @@ fun EditNoteUIScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
         ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp, 8.dp, 8.dp, 8.dp),
+                horizontalArrangement =  Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(id = R.string.edit_note_screen_title),
+                    style = Typography.h4.copy(fontWeight = FontWeight.Bold)
+                )
+            }
             TextField(
                 value = titleState,
                 onValueChange = {
@@ -56,7 +68,7 @@ fun EditNoteUIScreen(
                     focusedIndicatorColor = Color.Gray,
                     unfocusedIndicatorColor = Color.Gray
                 ),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().weight(1f),
                 singleLine = true,
                 textStyle = MaterialTheme.typography.h5
             )
@@ -73,8 +85,25 @@ fun EditNoteUIScreen(
                     unfocusedIndicatorColor = Color.Gray
                 ),
                 textStyle = MaterialTheme.typography.body1,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxWidth().weight(5f)
             )
+            Spacer(modifier = Modifier.height(16.dp))
+            TextField(
+                value = tagsState.joinToString(", "){ it.name },
+                onValueChange = {
+                    viewModel.enteredTags(it)
+                },
+                label = { Text(text = stringResource(id = R.string.note_tags_label)) },
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = MaterialTheme.colors.background,
+                    focusedIndicatorColor = Color.Gray,
+                    unfocusedIndicatorColor = Color.Gray
+                ),
+                modifier = Modifier.fillMaxWidth().weight(1f),
+                singleLine = true,
+                textStyle = MaterialTheme.typography.body1
+            )
+            Spacer(modifier = Modifier.height(64.dp))
         }
     }
 }

@@ -58,6 +58,11 @@ fun MainUIScreen(
                     text = stringResource(id = R.string.main_screen_title),
                     style = Typography.h4.copy(fontWeight = FontWeight.Bold)
                 )
+                // TODO: Add a button action to filter by tag
+                Text(
+                    text = "#",
+                    style = Typography.h4.copy(fontWeight = FontWeight.Bold)
+                )
             }
 
             Text(

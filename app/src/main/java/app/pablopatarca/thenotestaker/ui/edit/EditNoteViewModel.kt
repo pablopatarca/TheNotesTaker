@@ -22,6 +22,8 @@ class EditNoteViewModel @Inject constructor(
     val noteTitle: State<String> = _noteTitle
     private val _noteContent = mutableStateOf("")
     val noteContent: State<String> = _noteContent
+    private val _noteTags = mutableStateOf(listOf<Tag>())
+    val noteTags: State<List<Tag>> = _noteTags
 
     private var currentNoteId: Long? = null
     private var createdAt: Long? = null
@@ -35,6 +37,7 @@ class EditNoteViewModel @Inject constructor(
                         _noteTitle.value = note.title
                         _noteContent.value = note.content
                         createdAt = note.createdAt
+                        _noteTags.value = note.tags
                     }
                 }
             }
@@ -49,12 +52,21 @@ class EditNoteViewModel @Inject constructor(
         _noteContent.value = content
     }
 
+    fun enteredTags(tags: String){
+
+        val matches = _noteTags.value.filter {
+            tags.contains(it.name)
+        }
+        _noteTags.value = matches
+    }
+
     fun saveNote(){
         viewModelScope.launch {
             try {
 
                 _noteTitle.value = noteTitle.value
                 _noteContent.value = noteContent.value
+                _noteTags.value = noteTags.value
                 val currentTime = System.currentTimeMillis()
 
                 notesRepository.insert(
@@ -65,7 +77,7 @@ class EditNoteViewModel @Inject constructor(
                         createdAt = createdAt ?: currentTime,
                         updatedAt = currentTime,
                         color = 0,
-                        tags = listOf()
+                        tags = noteTags.value
                     )
                 )
             } catch(e: Exception) {
