@@ -1,17 +1,27 @@
 package app.pablopatarca.thenotestaker.data
 
 import app.pablopatarca.thenotestaker.domain.Note
+import app.pablopatarca.thenotestaker.domain.Notebook
 import app.pablopatarca.thenotestaker.domain.NotesRepository
 import app.pablopatarca.thenotestaker.domain.Tag
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class NotesRepositoryImpl(
-    private val dataSource: NotesDao
+    private val notebooksDS: NotebookDao,
+    private val notesDS: NotesDao
 ): NotesRepository {
 
+    override fun getNotebooks(): Flow<List<Notebook>> {
+        return notebooksDS.getNotebooks().map { notesList ->
+            notesList.map {
+                it.toNotebook()
+            }
+        }
+    }
+
     override fun getNotes(): Flow<List<Note>> {
-        return dataSource.getNotes().map { notesList ->
+        return notesDS.getNotes().map { notesList ->
             notesList.map {
                 it.toNote()
             }
@@ -19,12 +29,12 @@ class NotesRepositoryImpl(
     }
 
     override suspend fun getNoteById(id: Int): Note? {
-        return dataSource.getNoteById(id)?.toNote()
+        return notesDS.getNoteById(id)?.toNote()
     }
 
     override suspend fun insert(note: Note) {
 
-        val noteId = dataSource.insert(note.toNoteDto())
+        val noteId = notesDS.insert(note.toNoteDto())
 
         note.tags.forEach {
 
@@ -35,16 +45,16 @@ class NotesRepositoryImpl(
                 tagId = tagId
             )
 
-            dataSource.insert(noteTagRef)
+            notesDS.insert(noteTagRef)
         }
     }
 
     override suspend fun delete(note: Note) {
-        dataSource.delete(note.toNoteDto())
+        notesDS.delete(note.toNoteDto())
     }
 
     override fun getNotesWithTags(): Flow<List<Note>> {
-        return dataSource.getNotesTags().map { list ->
+        return notesDS.getNotesTags().map { list ->
             list.map {
                 it.toNote()
             }
@@ -56,15 +66,23 @@ class NotesRepositoryImpl(
     }
 
     override suspend fun insert(tag: Tag): Long {
-        return dataSource.insert(TagDto(name = tag.name))
+        return notesDS.insert(TagDto(name = tag.name))
     }
 
     override fun getTags(): Flow<List<Tag>> {
-        return dataSource.getTags().map { list ->
+        return notesDS.getTags().map { list ->
             list.map {
                 Tag(it.tagId, it.name)
             }
         }
+    }
+
+
+    private fun NotebookDto.toNotebook(): Notebook {
+        return Notebook(
+            id = id,
+            name = name
+        )
     }
 
     private fun Note.toNoteDto(): NoteDto {

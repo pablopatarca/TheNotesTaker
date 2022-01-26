@@ -18,7 +18,10 @@ object AppModule {
     @Provides
     @Singleton
     fun providesNotesRepository(db: NotesDatabase): NotesRepository {
-        return NotesRepositoryImpl(db.notesDao)
+        return NotesRepositoryImpl(
+            notebooksDS = db.notebooksDao,
+            notesDS = db.notesDao
+        )
     }
 
     @Provides
