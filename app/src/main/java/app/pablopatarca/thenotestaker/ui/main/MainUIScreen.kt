@@ -85,7 +85,7 @@ fun MainUIScreen(
 
 @Composable
 fun NotesList(
-    state: NotesUIState,
+    state: NotesState,
     navController: NavController
 ){
     LazyColumn(modifier = Modifier.fillMaxSize()){

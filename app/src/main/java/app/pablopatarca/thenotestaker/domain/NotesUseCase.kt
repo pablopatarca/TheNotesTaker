@@ -8,6 +8,26 @@ class NotesUseCase(
 ) {
 
     operator fun invoke(
+        filter: NotesFilter? = null
+    ): Flow<List<Note>> {
+        return repository.getNotesWithTags().map { notes ->
+            when(filter){
+                is NotesFilter.Tag -> {
+                    notes.filter { note ->
+                        note.tags.any { it.id == filter.id }
+                    }
+                }
+                is NotesFilter.Color -> {
+                    notes.filter { note ->
+                        note.color == filter.id.toInt()
+                    }
+                }
+                else -> notes
+            }
+        }
+    }
+
+    operator fun invoke(
         noteOrder: NoteOrder = NoteOrder.UpdatedAt(OrderType.Descending)
     ): Flow<List<Note>> {
         return repository.getNotes().map { notes ->

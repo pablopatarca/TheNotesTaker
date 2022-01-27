@@ -5,12 +5,14 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -20,7 +22,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import app.pablopatarca.thenotestaker.R
+import app.pablopatarca.thenotestaker.domain.NotesEvent
+import app.pablopatarca.thenotestaker.domain.NotesFilter
+import app.pablopatarca.thenotestaker.ui.drawer.DrawerComponent
+import app.pablopatarca.thenotestaker.ui.drawer.TagsComponentScreen
 import app.pablopatarca.thenotestaker.ui.edit.EditNoteUIScreen
 import app.pablopatarca.thenotestaker.ui.main.MainUIScreen
 import app.pablopatarca.thenotestaker.ui.main.NotesViewModel
@@ -40,11 +45,27 @@ class MainActivity : ComponentActivity() {
             TheNotesTakerTheme {
                 val scaffoldState = rememberScaffoldState()
                 val navController = rememberNavController()
+                val drawerState = rememberDrawerState(DrawerValue.Closed)
                 Scaffold(
+                    drawerContent = {
+                        Text("The Note Taker", modifier = Modifier.padding(16.dp))
+                        Divider()
+                        TagsComponentScreen(
+                            state = viewModel.state.value,
+                            onClick = {
+                                viewModel.onEvent(
+                                    NotesEvent.Filter(
+                                        NotesFilter.Tag(it)
+                                    )
+                                )
+                            }
+                        )
+                    },
+                    drawerGesturesEnabled = true,
+                    scaffoldState = scaffoldState
 //                    bottomBar = {
 //                        BottomNav(navController = navController)
 //                    },
-                    scaffoldState = scaffoldState
                 ) {
                     NavigationGraph(navController)
                 }
@@ -122,7 +143,12 @@ class MainActivity : ComponentActivity() {
             val currentRoute = navBackStackEntry?.destination?.route
             items.forEach { item ->
                 BottomNavigationItem(
-                    icon = { Icon(painterResource(id = item.icon), contentDescription = item.title) },
+                    icon = {
+                        Icon(
+                            painterResource(id = item.icon),
+                            contentDescription = item.title
+                        )
+                       },
                     label = { Text(text = item.title, fontSize = 12.sp) },
                     selectedContentColor = Color.Black,
                     unselectedContentColor = Color.Black.copy(0.4f),

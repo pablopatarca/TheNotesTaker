@@ -5,6 +5,8 @@ import androidx.room.Room
 import app.pablopatarca.thenotestaker.data.NotesDatabase
 import app.pablopatarca.thenotestaker.domain.NotesRepository
 import app.pablopatarca.thenotestaker.data.NotesRepositoryImpl
+import app.pablopatarca.thenotestaker.domain.NotesUseCase
+import app.pablopatarca.thenotestaker.domain.TagsUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,6 +21,18 @@ object AppModule {
     @Singleton
     fun providesNotesRepository(db: NotesDatabase): NotesRepository {
         return NotesRepositoryImpl(db.notesDao)
+    }
+
+    @Provides
+    @Singleton
+    fun providesNotesUseCase(repository: NotesRepository): NotesUseCase {
+        return NotesUseCase(repository = repository)
+    }
+
+    @Provides
+    @Singleton
+    fun providesTagsUseCase(repository: NotesRepository): TagsUseCase {
+        return TagsUseCase(repository = repository)
     }
 
     @Provides

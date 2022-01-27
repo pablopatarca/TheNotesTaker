@@ -63,7 +63,6 @@ class EditNoteViewModel @Inject constructor(
     fun saveNote(){
         viewModelScope.launch {
             try {
-
                 _noteTitle.value = noteTitle.value
                 _noteContent.value = noteContent.value
                 _noteTags.value = noteTags.value
