@@ -3,7 +3,6 @@ package app.pablopatarca.thenotestaker.data
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 
-
 @Dao
 interface NotesDao {
 
@@ -11,7 +10,7 @@ interface NotesDao {
     fun getNotes(): Flow<List<NoteDto>>
 
     @Query("SELECT * FROM NoteDto where noteId = :id")
-    suspend fun getNoteById(id: Int): NoteDto?
+    suspend fun getNoteById(id: Int): NoteWithTags?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(note: NoteDto): Long
@@ -28,6 +27,9 @@ interface NotesDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(noteTagRef: NoteTagCrossRef)
+
+    @Query("DELETE FROM NoteTagCrossRef WHERE noteId = :noteId")
+    suspend fun cleanRefTags(noteId: Long)
 
     @Query("SELECT * FROM TagDto")
     fun getTags(): Flow<List<TagDto>>

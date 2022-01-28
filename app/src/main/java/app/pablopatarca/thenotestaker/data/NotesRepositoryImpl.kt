@@ -26,6 +26,8 @@ class NotesRepositoryImpl(
 
         val noteId = dataSource.insert(note.toNoteDto())
 
+        dataSource.cleanRefTags(noteId)
+
         note.tags.forEach {
 
             val tagId = insert(it)

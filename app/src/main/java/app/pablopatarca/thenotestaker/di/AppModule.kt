@@ -3,8 +3,8 @@ package app.pablopatarca.thenotestaker.di
 import android.app.Application
 import androidx.room.Room
 import app.pablopatarca.thenotestaker.data.NotesDatabase
-import app.pablopatarca.thenotestaker.domain.NotesRepository
 import app.pablopatarca.thenotestaker.data.NotesRepositoryImpl
+import app.pablopatarca.thenotestaker.domain.NotesRepository
 import app.pablopatarca.thenotestaker.domain.NotesUseCase
 import app.pablopatarca.thenotestaker.domain.TagsUseCase
 import dagger.Module

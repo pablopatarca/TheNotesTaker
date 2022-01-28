@@ -9,9 +9,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -22,15 +24,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import app.pablopatarca.thenotestaker.R
 import app.pablopatarca.thenotestaker.domain.NotesEvent
 import app.pablopatarca.thenotestaker.domain.NotesFilter
-import app.pablopatarca.thenotestaker.ui.drawer.DrawerComponent
 import app.pablopatarca.thenotestaker.ui.drawer.TagsComponentScreen
 import app.pablopatarca.thenotestaker.ui.edit.EditNoteUIScreen
 import app.pablopatarca.thenotestaker.ui.main.MainUIScreen
 import app.pablopatarca.thenotestaker.ui.main.NotesViewModel
 import app.pablopatarca.thenotestaker.ui.theme.TheNotesTakerTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -43,16 +46,25 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             TheNotesTakerTheme {
-                val scaffoldState = rememberScaffoldState()
+                val scaffoldState = rememberScaffoldState(
+                    drawerState = rememberDrawerState(DrawerValue.Open)
+                )
                 val navController = rememberNavController()
-                val drawerState = rememberDrawerState(DrawerValue.Closed)
+                val scope = rememberCoroutineScope()
                 Scaffold(
                     drawerContent = {
-                        Text("The Note Taker", modifier = Modifier.padding(16.dp))
+                        Text(
+                            text = stringResource(id = R.string.drawer_menu_title),
+                            modifier = Modifier.padding(16.dp,32.dp,16.dp,32.dp),
+                            fontSize = 30.sp
+                        )
                         Divider()
                         TagsComponentScreen(
                             state = viewModel.state.value,
                             onClick = {
+                                scope.launch {
+                                    scaffoldState.drawerState.close()
+                                }
                                 viewModel.onEvent(
                                     NotesEvent.Filter(
                                         NotesFilter.Tag(it)

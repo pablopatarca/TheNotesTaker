@@ -7,6 +7,12 @@ class NotesUseCase(
     private val repository: NotesRepository
 ) {
 
+    suspend operator fun invoke(
+        id: Int
+    ): Note? {
+        return repository.getNoteById(id)
+    }
+
     operator fun invoke(
         filter: NotesFilter? = null
     ): Flow<List<Note>> {
@@ -48,5 +54,9 @@ class NotesUseCase(
                 }
             }
         }
+    }
+
+    suspend fun insert(note: Note){
+        repository.insert(note)
     }
 }

@@ -6,4 +6,5 @@
     <string name="note_content_label">Write something…</string>
     <string name="main_screen_title">Your Notes ✍️</string>
     <string name="edit_note_screen_title">Write… ✍️</string>
+    <string name="drawer_menu_title">✍️ The Note Taker</string>
 </resources>

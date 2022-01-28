@@ -89,7 +89,7 @@ fun EditNoteUIScreen(
             )
             Spacer(modifier = Modifier.height(16.dp))
             TextField(
-                value = tagsState.joinToString(", "){ it.name },
+                value = tagsState,
                 onValueChange = {
                     viewModel.enteredTags(it)
                 },

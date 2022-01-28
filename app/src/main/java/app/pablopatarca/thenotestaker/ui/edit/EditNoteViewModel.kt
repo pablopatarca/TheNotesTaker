@@ -6,15 +6,18 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.pablopatarca.thenotestaker.domain.Note
-import app.pablopatarca.thenotestaker.domain.NotesRepository
+import app.pablopatarca.thenotestaker.domain.NotesUseCase
 import app.pablopatarca.thenotestaker.domain.Tag
+import app.pablopatarca.thenotestaker.domain.TagsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class EditNoteViewModel @Inject constructor(
-    private val notesRepository: NotesRepository,
+    private val notesUseCase: NotesUseCase,
+    private val tagsUseCase: TagsUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -22,8 +25,10 @@ class EditNoteViewModel @Inject constructor(
     val noteTitle: State<String> = _noteTitle
     private val _noteContent = mutableStateOf("")
     val noteContent: State<String> = _noteContent
-    private val _noteTags = mutableStateOf(listOf<Tag>())
-    val noteTags: State<List<Tag>> = _noteTags
+    private val _noteTags = mutableStateOf("")
+    val noteTags: State<String> = _noteTags
+
+    private lateinit var _tagsList: List<Tag>
 
     private var currentNoteId: Long? = null
     private var createdAt: Long? = null
@@ -32,12 +37,15 @@ class EditNoteViewModel @Inject constructor(
         savedStateHandle.get<Int>("id")?.let { noteId ->
             if(noteId != -1) {
                 viewModelScope.launch {
-                    notesRepository.getNoteById(noteId)?.also { note ->
+                    notesUseCase(noteId)?.also { note ->
                         currentNoteId = note.id
                         _noteTitle.value = note.title
                         _noteContent.value = note.content
                         createdAt = note.createdAt
-                        _noteTags.value = note.tags
+                        _noteTags.value = note.tags.toStringTags()
+                        tagsUseCase().collectLatest {
+                            _tagsList = it
+                        }
                     }
                 }
             }
@@ -53,11 +61,7 @@ class EditNoteViewModel @Inject constructor(
     }
 
     fun enteredTags(tags: String){
-
-        val matches = _noteTags.value.filter {
-            tags.contains(it.name)
-        }
-        _noteTags.value = matches
+        _noteTags.value = tags
     }
 
     fun saveNote(){
@@ -66,9 +70,11 @@ class EditNoteViewModel @Inject constructor(
                 _noteTitle.value = noteTitle.value
                 _noteContent.value = noteContent.value
                 _noteTags.value = noteTags.value
+                val tagsList = noteTags.value.toTagList()
+
                 val currentTime = System.currentTimeMillis()
 
-                notesRepository.insert(
+                notesUseCase.insert(
                     Note(
                         id = currentNoteId,
                         title = noteTitle.value,
@@ -76,7 +82,7 @@ class EditNoteViewModel @Inject constructor(
                         createdAt = createdAt ?: currentTime,
                         updatedAt = currentTime,
                         color = 0,
-                        tags = noteTags.value
+                        tags = tagsList
                     )
                 )
             } catch(e: Exception) {
@@ -85,4 +91,17 @@ class EditNoteViewModel @Inject constructor(
         }
     }
 
+    private fun List<Tag>.toStringTags(): String {
+        return joinToString(", "){ it.name }
+    }
+
+    private fun String.toTagList(): List<Tag> {
+        return split(",")
+            .map { str ->
+            val tagName = str.replace(" ","")
+            _tagsList.firstOrNull {
+                it.name.equals(tagName, true)
+            } ?: Tag(name = tagName)
+        }
+    }
 }
