@@ -7,6 +7,10 @@ import androidx.activity.viewModels
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -14,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -32,6 +37,7 @@ import app.pablopatarca.thenotestaker.ui.edit.EditNoteUIScreen
 import app.pablopatarca.thenotestaker.ui.main.MainUIScreen
 import app.pablopatarca.thenotestaker.ui.main.NotesViewModel
 import app.pablopatarca.thenotestaker.ui.theme.TheNotesTakerTheme
+import app.pablopatarca.thenotestaker.ui.theme.Typography
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -47,11 +53,46 @@ class MainActivity : ComponentActivity() {
         setContent {
             TheNotesTakerTheme {
                 val scaffoldState = rememberScaffoldState(
-                    drawerState = rememberDrawerState(DrawerValue.Open)
+                    drawerState = rememberDrawerState(DrawerValue.Closed)
                 )
                 val navController = rememberNavController()
                 val scope = rememberCoroutineScope()
                 Scaffold(
+                    topBar = {
+                        TopAppBar(
+                            title = {
+                                Text(
+                                    text = stringResource(id = R.string.main_screen_title),
+                                    style = Typography.h5.copy(fontWeight = FontWeight.Bold)
+                                )
+                            },
+                            navigationIcon = {
+                                IconButton(
+                                    onClick = {
+                                        scope.launch {
+                                            scaffoldState.drawerState.open()
+                                        }
+                                    }
+                                ){
+                                    Icon(Icons.Filled.Menu, null)
+                                }
+                            },
+                            actions = {
+                                IconButton(
+                                    onClick = {
+                                        navController.navigate(
+                                            Screen.SearchScreen.route
+                                        )
+                                    }
+                                ) {
+                                    Icon(Icons.Filled.Search, contentDescription = "Search")
+                                }
+                                IconButton(onClick = { /* doSomething() */ }) {
+                                    Icon(Icons.Filled.MoreVert, contentDescription = "more")
+                                }
+                            }
+                        )
+                    },
                     drawerContent = {
                         Text(
                             text = stringResource(id = R.string.drawer_menu_title),

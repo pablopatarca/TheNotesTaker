@@ -3,22 +3,20 @@ package app.pablopatarca.thenotestaker.ui.main
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import app.pablopatarca.thenotestaker.R
 import app.pablopatarca.thenotestaker.ui.Screen
-import app.pablopatarca.thenotestaker.ui.theme.Typography
 
 @Composable
 fun MainUIScreen(
@@ -27,7 +25,6 @@ fun MainUIScreen(
 ) {
     val state = viewModel.state.value
     val scaffoldState = rememberScaffoldState()
-    val scope = rememberCoroutineScope()
 
     Scaffold(
         floatingActionButton = {
@@ -38,6 +35,19 @@ fun MainUIScreen(
                 backgroundColor = MaterialTheme.colors.primary
             ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = null)
+            }
+        },
+        isFloatingActionButtonDocked = true,
+        bottomBar = {
+            BottomAppBar(
+                // Defaults to null, that is, No cutout
+                cutoutShape = MaterialTheme.shapes.small.copy(
+                    CornerSize(percent = 50)
+                )
+            ) {
+                IconButton(onClick = { /* doSomething() */ }) {
+                    Icon(Icons.Filled.MoreHoriz, contentDescription = "more")
+                }
             }
         },
         scaffoldState = scaffoldState
@@ -54,25 +64,16 @@ fun MainUIScreen(
                 horizontalArrangement =  Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = stringResource(id = R.string.main_screen_title),
-                    style = Typography.h4.copy(fontWeight = FontWeight.Bold)
-                )
                 // TODO: Add a button action to filter by tag
                 Text(
-                    text = "#",
-                    style = Typography.h4.copy(fontWeight = FontWeight.Bold)
+                    text = "Tags: ${state.tags.joinToString(", ") { it.name }}",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp, 0.dp, 0.dp, 0.dp),
+                    fontStyle = FontStyle.Italic,
+                    fontFamily = FontFamily.SansSerif
                 )
             }
-
-            Text(
-                text = "Tags: ${state.tags.joinToString(", ") { it.name }}",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp, 0.dp, 0.dp, 0.dp),
-                fontStyle = FontStyle.Italic,
-                fontFamily = FontFamily.SansSerif
-            )
 
             NotesList(
                 state = state,
