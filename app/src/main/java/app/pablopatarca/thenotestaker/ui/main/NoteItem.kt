@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.pablopatarca.thenotestaker.domain.Note
@@ -19,8 +20,7 @@ import java.util.*
 @Composable
 fun NoteItem(
     note: Note,
-    onClick: ()-> Unit = {},
-    modifier: Modifier
+    onClick: ()-> Unit = {}
 ){
     
     Card(
@@ -80,4 +80,19 @@ private fun Long.toTime(): String {
     val date = Date(this)
     val format = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
     return format.format(date)
+}
+
+@Preview
+@Composable
+fun NoteItem(){
+    NoteItem(
+        note = Note(
+            title = "Preview",
+            content = "Preview",
+            createdAt = 0,
+            updatedAt = 0,
+            color = 0
+        ),
+        onClick = {}
+    )
 }

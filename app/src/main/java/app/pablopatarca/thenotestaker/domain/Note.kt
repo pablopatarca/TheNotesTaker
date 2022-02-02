@@ -7,5 +7,5 @@ data class Note(
     val createdAt: Long,
     val updatedAt: Long,
     val color: Int,
-    val tags: List<Tag>
+    val tags: List<Tag> = listOf()
 )

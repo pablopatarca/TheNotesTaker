@@ -59,37 +59,12 @@ class MainActivity : ComponentActivity() {
                 val scope = rememberCoroutineScope()
                 Scaffold(
                     topBar = {
-                        TopAppBar(
-                            title = {
-                                Text(
-                                    text = stringResource(id = R.string.main_screen_title),
-                                    style = Typography.h5.copy(fontWeight = FontWeight.Bold)
+                        TopBarUI(
+                            scaffoldState = scaffoldState,
+                            onSearchClick = {
+                                navController.navigate(
+                                    Screen.SearchScreen.route
                                 )
-                            },
-                            navigationIcon = {
-                                IconButton(
-                                    onClick = {
-                                        scope.launch {
-                                            scaffoldState.drawerState.open()
-                                        }
-                                    }
-                                ){
-                                    Icon(Icons.Filled.Menu, null)
-                                }
-                            },
-                            actions = {
-                                IconButton(
-                                    onClick = {
-                                        navController.navigate(
-                                            Screen.SearchScreen.route
-                                        )
-                                    }
-                                ) {
-                                    Icon(Icons.Filled.Search, contentDescription = "Search")
-                                }
-                                IconButton(onClick = { /* doSomething() */ }) {
-                                    Icon(Icons.Filled.MoreVert, contentDescription = "more")
-                                }
                             }
                         )
                     },

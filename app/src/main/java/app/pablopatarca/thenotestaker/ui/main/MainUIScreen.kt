@@ -1,6 +1,7 @@
 package app.pablopatarca.thenotestaker.ui.main
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
@@ -10,13 +11,10 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import app.pablopatarca.thenotestaker.ui.Screen
+import kotlinx.coroutines.launch
 
 @Composable
 fun MainUIScreen(
@@ -25,6 +23,7 @@ fun MainUIScreen(
 ) {
     val state = viewModel.state.value
     val scaffoldState = rememberScaffoldState()
+    val scope = rememberCoroutineScope()
 
     Scaffold(
         floatingActionButton = {
@@ -45,7 +44,14 @@ fun MainUIScreen(
                     CornerSize(percent = 50)
                 )
             ) {
-                IconButton(onClick = { /* doSomething() */ }) {
+                IconButton(
+                    onClick = {
+                        scope.launch {
+                            scaffoldState.snackbarHostState
+                                .showSnackbar("Snackbar #")
+                        }
+                    }
+                ) {
                     Icon(Icons.Filled.MoreHoriz, contentDescription = "more")
                 }
             }
@@ -54,27 +60,8 @@ fun MainUIScreen(
     ) {
 
         Column(
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp, 8.dp, 8.dp, 8.dp),
-                horizontalArrangement =  Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // TODO: Add a button action to filter by tag
-                Text(
-                    text = "Tags: ${state.tags.joinToString(", ") { it.name }}",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp, 0.dp, 0.dp, 0.dp),
-                    fontStyle = FontStyle.Italic,
-                    fontFamily = FontFamily.SansSerif
-                )
-            }
-
             NotesList(
                 state = state,
                 navController = navController
@@ -97,8 +84,7 @@ fun NotesList(
                     navController.navigate(
                         Screen.EditScreen.route + "?id=${note.id}"
                     )
-                },
-                modifier = Modifier.fillMaxWidth()
+                }
             )
         }
     }
