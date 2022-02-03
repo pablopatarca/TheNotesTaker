@@ -1,24 +1,37 @@
 package app.pablopatarca.thenotestaker.ui.edit
 
+import androidx.compose.animation.Animatable
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import app.pablopatarca.thenotestaker.R
+import app.pablopatarca.thenotestaker.domain.Note
 import app.pablopatarca.thenotestaker.ui.theme.Typography
+import kotlinx.coroutines.launch
 
 @Composable
 fun EditNoteUIScreen(
     navController: NavController,
+    noteColor: Int = -1,
     viewModel: EditNoteViewModel = hiltViewModel()
 ){
 
@@ -26,6 +39,14 @@ fun EditNoteUIScreen(
     val contentState = viewModel.noteContent.value
     val tagsState = viewModel.noteTags.value
     val scaffoldState = rememberScaffoldState()
+    val selectedNoteColor = remember {
+        Animatable(
+            Color(
+                if (noteColor!=-1) noteColor else viewModel.noteColor.value
+            )
+        )
+    }
+    val scope = rememberCoroutineScope()
 
     Scaffold(
         floatingActionButton = {
@@ -41,9 +62,12 @@ fun EditNoteUIScreen(
         },
         scaffoldState = scaffoldState
     ) {
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(selectedNoteColor.value)
+                .padding(16.dp)
         ) {
             Row(
                 modifier = Modifier
@@ -57,6 +81,41 @@ fun EditNoteUIScreen(
                     style = Typography.h4.copy(fontWeight = FontWeight.Bold)
                 )
             }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ){
+                Note.noteColors.forEach {
+                    val color = it.toArgb()
+                    Box(modifier = Modifier
+                        .size(50.dp)
+                        .shadow(15.dp, CircleShape)
+                        .background(it)
+                        .border(
+                            width = 2.dp,
+                            color = if (viewModel.noteColor.value == color) Color.Black
+                            else Color.Transparent,
+                            shape = CircleShape
+                        )
+                        .clickable {
+                            scope.launch {
+                                selectedNoteColor.animateTo(
+                                    targetValue = Color(color),
+                                    animationSpec = tween(
+                                        durationMillis = 500
+                                    )
+                                )
+                            }
+                            viewModel.setColor(color)
+                        }
+                    ) {
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+                }
+            }
+
             TextField(
                 value = titleState,
                 onValueChange = {
@@ -68,7 +127,9 @@ fun EditNoteUIScreen(
                     focusedIndicatorColor = Color.Gray,
                     unfocusedIndicatorColor = Color.Gray
                 ),
-                modifier = Modifier.fillMaxWidth().weight(1f),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
                 singleLine = true,
                 textStyle = MaterialTheme.typography.h5
             )
@@ -85,7 +146,9 @@ fun EditNoteUIScreen(
                     unfocusedIndicatorColor = Color.Gray
                 ),
                 textStyle = MaterialTheme.typography.body1,
-                modifier = Modifier.fillMaxWidth().weight(5f)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(5f)
             )
             Spacer(modifier = Modifier.height(16.dp))
             TextField(
@@ -99,7 +162,9 @@ fun EditNoteUIScreen(
                     focusedIndicatorColor = Color.Gray,
                     unfocusedIndicatorColor = Color.Gray
                 ),
-                modifier = Modifier.fillMaxWidth().weight(1f),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
                 singleLine = true,
                 textStyle = MaterialTheme.typography.body1
             )

@@ -2,6 +2,7 @@ package app.pablopatarca.thenotestaker.ui.edit
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -27,6 +28,8 @@ class EditNoteViewModel @Inject constructor(
     val noteContent: State<String> = _noteContent
     private val _noteTags = mutableStateOf("")
     val noteTags: State<String> = _noteTags
+    private val _noteColor = mutableStateOf(Note.noteColors.first().toArgb())
+    val noteColor: State<Int> = _noteColor
 
     private lateinit var _tagsList: List<Tag>
 
@@ -64,6 +67,10 @@ class EditNoteViewModel @Inject constructor(
         _noteTags.value = tags
     }
 
+    fun setColor(color: Int){
+        _noteColor.value = color
+    }
+
     fun saveNote(){
         viewModelScope.launch {
             try {
@@ -81,7 +88,7 @@ class EditNoteViewModel @Inject constructor(
                         content = noteContent.value,
                         createdAt = createdAt ?: currentTime,
                         updatedAt = currentTime,
-                        color = 0,
+                        color = noteColor.value,
                         tags = tagsList
                     )
                 )

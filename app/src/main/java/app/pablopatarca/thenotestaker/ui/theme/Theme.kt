@@ -28,6 +28,13 @@ private val LightColorPalette = lightColors(
     onSurface = Color.Black
 )
 
+// Note colors
+val NoteWhite = Color(0xFFFAFAFA)
+val NoteRed = Color(0xFFFF8A80)
+val NoteLime = Color(0xFFDCE775)
+val NoteBlue = Color(0xFF90CAF9)
+val NoteGreen = Color(0xFF00C853)
+
 @Composable
 fun TheNotesTakerTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
