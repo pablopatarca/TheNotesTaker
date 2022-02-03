@@ -7,6 +7,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -29,7 +31,12 @@ fun NoteItem(
             .padding(16.dp)
             .clickable {
                 onClick.invoke()
-            }
+            },
+        backgroundColor = Color(
+            if (note.color!=0) note.color
+            else Note.noteColors.first().toArgb()
+        ),
+        elevation = 3.dp
     ) {
         Column(
             modifier = Modifier

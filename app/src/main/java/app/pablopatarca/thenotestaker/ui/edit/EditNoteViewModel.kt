@@ -1,5 +1,6 @@
 package app.pablopatarca.thenotestaker.ui.edit
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.toArgb
@@ -31,24 +32,27 @@ class EditNoteViewModel @Inject constructor(
     private val _noteColor = mutableStateOf(Note.noteColors.first().toArgb())
     val noteColor: State<Int> = _noteColor
 
-    private lateinit var _tagsList: List<Tag>
+    private val _tagsList: MutableState<List<Tag>> = mutableStateOf(listOf())
+    val tagsList: State<List<Tag>> = _tagsList
 
     private var currentNoteId: Long? = null
     private var createdAt: Long? = null
 
     init {
-        savedStateHandle.get<Int>("id")?.let { noteId ->
-            if(noteId != -1) {
-                viewModelScope.launch {
+        viewModelScope.launch {
+
+            tagsUseCase().collectLatest {
+                _tagsList.value = it
+            }
+
+            savedStateHandle.get<Int>("id")?.let { noteId ->
+                if(noteId != -1) {
                     notesUseCase(noteId)?.also { note ->
                         currentNoteId = note.id
                         _noteTitle.value = note.title
                         _noteContent.value = note.content
                         createdAt = note.createdAt
                         _noteTags.value = note.tags.toStringTags()
-                        tagsUseCase().collectLatest {
-                            _tagsList = it
-                        }
                     }
                 }
             }
@@ -106,7 +110,7 @@ class EditNoteViewModel @Inject constructor(
         return split(",")
             .map { str ->
             val tagName = str.replace(" ","")
-            _tagsList.firstOrNull {
+            _tagsList.value.firstOrNull {
                 it.name.equals(tagName, true)
             } ?: Tag(name = tagName)
         }

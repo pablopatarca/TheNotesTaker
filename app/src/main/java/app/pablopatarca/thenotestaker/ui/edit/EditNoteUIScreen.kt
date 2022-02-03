@@ -123,7 +123,7 @@ fun EditNoteUIScreen(
                 },
                 label = { Text(text = stringResource(id = R.string.note_title_label)) },
                 colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = MaterialTheme.colors.background,
+                    backgroundColor = Color.Transparent,
                     focusedIndicatorColor = Color.Gray,
                     unfocusedIndicatorColor = Color.Gray
                 ),
@@ -141,7 +141,7 @@ fun EditNoteUIScreen(
                 },
                 label = { Text(text = stringResource(id = R.string.note_content_label)) },
                 colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = MaterialTheme.colors.background,
+                    backgroundColor = Color.Transparent,
                     focusedIndicatorColor = Color.Gray,
                     unfocusedIndicatorColor = Color.Gray
                 ),
@@ -158,7 +158,7 @@ fun EditNoteUIScreen(
                 },
                 label = { Text(text = stringResource(id = R.string.note_tags_label)) },
                 colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = MaterialTheme.colors.background,
+                    backgroundColor = Color.Transparent,
                     focusedIndicatorColor = Color.Gray,
                     unfocusedIndicatorColor = Color.Gray
                 ),
