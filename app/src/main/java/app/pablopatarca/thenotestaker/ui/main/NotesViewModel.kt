@@ -5,10 +5,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.pablopatarca.thenotestaker.domain.*
+import app.pablopatarca.thenotestaker.ui.UiMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,7 +24,12 @@ class NotesViewModel @Inject constructor(
     private val _state = mutableStateOf(NotesState())
     val state: State<NotesState> = _state
 
-    private val deletedNote: Note? = null
+    // To emit an state once
+    // Examples: Navigation, Snackbar messages, etc
+    private val _messages = MutableSharedFlow<UiMessage>()
+    val messages = _messages.asSharedFlow()
+
+    private var deletedNote: Note? = null
     private var getNotesJob: Job? = null
 
     init {
@@ -39,12 +48,14 @@ class NotesViewModel @Inject constructor(
         }
     }
 
+    fun more(){
+        viewModelScope.launch {
+            _messages.emit(UiMessage("More selected"))
+        }
+    }
+
     private fun getNotes(filter: NotesFilter? = null){
         getNotesJob?.cancel()
-
-//        val filter = state.value.filter?.id?.let {
-//            NotesFilter.Tag(it)
-//        }
 
         getNotesJob = notesUseCase(filter).onEach {
             _state.value = state.value.copy(
@@ -57,5 +68,26 @@ class NotesViewModel @Inject constructor(
                 tags = it
             )
         }.launchIn(viewModelScope)
+    }
+
+    fun deleteNote(id: Long) {
+        viewModelScope.launch {
+            notesUseCase.invoke(id)?.let {
+                deletedNote = it
+                notesUseCase.delete(it)
+                _messages.emit(
+                    UiMessage("Note deleted", true)
+                )
+            } ?: _messages.emit(UiMessage("Note not found"))
+        }
+    }
+
+    fun undoDelete() {
+        viewModelScope.launch {
+            deletedNote?.let {
+                notesUseCase.insert(it)
+                deletedNote = null
+            } ?: _messages.emit(UiMessage(""))
+        }
     }
 }

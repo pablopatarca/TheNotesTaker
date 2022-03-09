@@ -18,7 +18,7 @@ class NotesRepositoryImpl(
         }
     }
 
-    override suspend fun getNoteById(id: Int): Note? {
+    override suspend fun getNoteById(id: Long): Note? {
         return dataSource.getNoteById(id)?.toNote()
     }
 

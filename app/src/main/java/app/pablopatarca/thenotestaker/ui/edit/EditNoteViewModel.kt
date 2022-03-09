@@ -45,8 +45,8 @@ class EditNoteViewModel @Inject constructor(
                 _tagsList.value = it
             }
 
-            savedStateHandle.get<Int>("id")?.let { noteId ->
-                if(noteId != -1) {
+            savedStateHandle.get<Long>("id")?.let { noteId ->
+                if(noteId != -1L) {
                     notesUseCase(noteId)?.also { note ->
                         currentNoteId = note.id
                         _noteTitle.value = note.title

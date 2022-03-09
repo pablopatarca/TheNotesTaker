@@ -124,8 +124,8 @@ class MainActivity : ComponentActivity() {
                 route = Screen.EditScreen.route + "?id={id}",
                 arguments = listOf(
                     navArgument("id"){
-                        type = NavType.IntType
-                        defaultValue = -1
+                        type = NavType.LongType
+                        defaultValue = -1L
                     }
 //                    navArgument("noteColor"){
 //                        type = NavType.IntType

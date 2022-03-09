@@ -14,6 +14,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import app.pablopatarca.thenotestaker.ui.Screen
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @Composable
@@ -64,8 +65,23 @@ fun MainUIScreen(
         ) {
             NotesList(
                 state = state,
-                navController = navController
+                navController = navController,
+                viewModel = viewModel
             )
+        }
+
+        scope.launch {
+            viewModel.messages.collectLatest {
+                if(it.undo){
+                    val result = scaffoldState.snackbarHostState
+                        .showSnackbar(it.message, "Undo")
+                    if(result == SnackbarResult.ActionPerformed) {
+                        viewModel.undoDelete()
+                    }
+                } else
+                    scaffoldState.snackbarHostState
+                        .showSnackbar(it.message)
+            }
         }
 
     }
@@ -74,7 +90,8 @@ fun MainUIScreen(
 @Composable
 fun NotesList(
     state: NotesState,
-    navController: NavController
+    navController: NavController,
+    viewModel: NotesViewModel
 ){
     LazyColumn(modifier = Modifier.fillMaxSize()){
         items(state.notes){ note ->
@@ -84,6 +101,9 @@ fun NotesList(
                     navController.navigate(
                         Screen.EditScreen.route + "?id=${note.id}"
                     )
+                },
+                onLongClick = {
+                    note.id?.let { viewModel.deleteNote(it) }
                 }
             )
         }

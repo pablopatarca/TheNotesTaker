@@ -8,7 +8,7 @@ class NotesUseCase(
 ) {
 
     suspend operator fun invoke(
-        id: Int
+        id: Long
     ): Note? {
         return repository.getNoteById(id)
     }
@@ -58,5 +58,9 @@ class NotesUseCase(
 
     suspend fun insert(note: Note){
         repository.insert(note)
+    }
+
+    suspend fun delete(note: Note){
+        repository.delete(note)
     }
 }

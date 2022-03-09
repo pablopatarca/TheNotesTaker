@@ -1,6 +1,7 @@
 package app.pablopatarca.thenotestaker.ui.main
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
@@ -9,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -22,13 +24,17 @@ import java.util.*
 @Composable
 fun NoteItem(
     note: Note,
-    onClick: ()-> Unit = {}
+    onClick: ()-> Unit = {},
+    onLongClick: ()-> Unit = {}
 ){
     
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
+            .pointerInput(Unit){
+                detectTapGestures(onLongPress = { onLongClick() })
+            }
             .clickable {
                 onClick.invoke()
             },
@@ -100,6 +106,7 @@ fun NoteItem(){
             updatedAt = 0,
             color = 0
         ),
-        onClick = {}
+        onClick = {},
+        onLongClick = {}
     )
 }
